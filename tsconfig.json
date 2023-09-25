@@ -19,13 +19,11 @@
     }
   },
   "include": [
-    "auto-imports.d.ts",
-    "components.d.ts",
-    "env.d.ts",
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "node_modules/types-mediawiki"
   ],
   "references": [
     {
