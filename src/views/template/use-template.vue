@@ -13,7 +13,7 @@ ReplPlayground(
   template(#quiz)
     NP 下面的 wikitext 使用了一个叫 {{ tl('Color') }} 的模板，让文字变成了红色（red）：
     NP: span(style='color: red') 红颜色
-    NP 你可以试着让文字变成蓝色（blue）吗？就像这样：
+    NP 你可以试着使用这个模板让文字变成蓝色（blue）吗？就像这样：
     NP: span(style='color: blue') 蓝颜色
     NP 提示：使用 {{ tl('Color') }} 模板的第一个参数来指定颜色，第二个参数来指定文字内容。
 </template>
@@ -31,12 +31,16 @@ async function beforeSubmit(wikitext: string) {
 async function checkAnswer(wikitext: string, html: string) {
   const dom = new DOMParser().parseFromString(html, 'text/html')
   const colorSpan = dom.querySelector<HTMLSpanElement>('span[style]')
-  return !!(
+  const isGood = !!(
     colorSpan &&
     colorSpan.style.color === 'blue' &&
-    !!colorSpan.innerText.trim() &&
-    /\{\{color/gi.test(wikitext)
+    !!colorSpan.innerText.trim()
   )
+  const isHacker = !/\{\{color/gi.test(wikitext) || /style=/gi.test(wikitext)
+  if (isGood && isHacker) {
+    return '嗯？没有审题哟~'
+  }
+  return isGood
 }
 </script>
 

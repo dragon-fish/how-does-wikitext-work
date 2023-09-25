@@ -47,8 +47,8 @@ async function checkAnswer(wikitext: string, html: string) {
   const dom = new DOMParser().parseFromString(html, 'text/html')
   const bold = dom.querySelector('b')
   const italic = dom.querySelector('i')
-  const boldItalic = dom.querySelector<HTMLElement>('i b')
-  return !!(
+  const boldItalic = dom.querySelector<HTMLElement>('i b, b i')
+  const isGood = !!(
     bold &&
     italic &&
     boldItalic &&
@@ -56,6 +56,11 @@ async function checkAnswer(wikitext: string, html: string) {
     italic.innerText === '斜体' &&
     boldItalic.innerText === '粗斜体'
   )
+  const isHacker = /<[bi]/.test(wikitext)
+  if (isGood && isHacker) {
+    return '嗯？没有审题哟~'
+  }
+  return isGood
 }
 </script>
 

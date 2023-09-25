@@ -35,26 +35,28 @@ ReplPlayground(
 
 <script setup lang="ts">
 const title = `段落和换行`
-const defaultValue = `第一段文字
-第二段文字
+const defaultValue = `一个单独的换行无法另起段落
+试着让这句话变成第二段
 
 ----
 
-第一行文字	第二行文字`
+能不能在这里→	←换行，但是不另起段落呢`
 const exampleAnswer = `第一段文字
 
-第二段文字
+使用两个换行符来另起一段文字
 
 ----
 
-第一行文字<br>第二行文字`
+在一个段落里<br>换行就是这么简单`
 async function onInit() {}
 async function beforeSubmit(wikitext: string) {
   return wikitext
 }
 async function checkAnswer(wikitext: string, html: string) {
   const dom = new DOMParser().parseFromString(html, 'text/html')
-  return true
+  const paragraphs = dom.querySelectorAll('p')
+  const br = dom.querySelector('br')
+  return !!(paragraphs.length === 3 && br)
 }
 </script>
 

@@ -1,5 +1,7 @@
 <template lang="pug">
 NCard(:title='title')
+  template(#header-extra)
+    RouterLink(to='/'): NButton(circle, secondary, size='small') ✕
   .playground
     .documentation
       slot(name='doc')
@@ -14,7 +16,7 @@ NCard(:title='title')
           NButton.flex-1(@click='handleHelpMe', type='info') 帮帮我！
     NSpin.preview(:show='isLoading')
       h3 测验结果：
-        NTag(size='large', :type='resultType') {{ statusText }}
+        NTag(size='large', :type='resultType') {{ customResultText || statusText }}
       iframe.w-full.h-40vh(frameborder='0', :srcdoc='resultHTML')
 </template>
 
@@ -29,7 +31,7 @@ const props = defineProps<{
   exampleAnswer: string
   onInit?: () => Awaitable<any>
   beforeSubmit?: (wikitext: string) => Awaitable<string>
-  checkAnswer?: (wikitext: string, html: string) => Awaitable<boolean>
+  checkAnswer?: (wikitext: string, html: string) => Awaitable<boolean | string>
 }>()
 const emit = defineEmits<{}>()
 
@@ -38,6 +40,7 @@ const resultHTML = ref('')
 const lastSubmit = ref('')
 const isLoading = ref(false)
 const resultType = ref<ResultType>('default' as ResultType)
+const customResultText = ref('')
 const statusText = computed(() => {
   switch (resultType.value) {
     case 'default':
@@ -63,6 +66,7 @@ async function handleSubmit() {
     return
   }
   isLoading.value = true
+  customResultText.value = ''
   try {
     const wikitext =
       (await props?.beforeSubmit?.(userInput.value)) || userInput.value
@@ -80,7 +84,12 @@ async function handleSubmit() {
     const html = data.parse.text
     resultHTML.value = html
     const good = await props?.checkAnswer?.(wikitext, html)
-    resultType.value = good ? 'success' : 'error'
+    if (typeof good === 'string') {
+      resultType.value = 'error'
+      customResultText.value = good
+    } else {
+      resultType.value = good ? 'success' : 'error'
+    }
   } finally {
     isLoading.value = false
   }
@@ -89,6 +98,8 @@ async function handleSubmit() {
 async function handleReset() {
   isLoading.value = true
   userInput.value = props.defaultValue || ''
+  customResultText.value = ''
+  lastSubmit.value = ''
   resultHTML.value = ''
   resultType.value = 'default'
   try {
