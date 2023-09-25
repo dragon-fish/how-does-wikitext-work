@@ -30,29 +30,30 @@ export class WikitextMagicBook {
     document.querySelector('h1')!.innerText = title
     return this.app.mount(this.root)
   }
-  checkIsEntryPage() {
-    return (
-      this.mwConfig.wgCanonicalSpecialPageName === 'Blankpage' &&
-      this.mwConfig.wgTitle.endsWith('/WikitextMagicBook')
-    )
-  }
-
-  static autoMount(options: MagicBookOptions) {
-    return new Promise((resolve, reject) => {
-      options.mw.hook('wikipage.content').add(($container) => {
-        const root = $container.get(0)
-        const book = new WikitextMagicBook(root, options)
-        if (book.checkIsEntryPage()) {
-          book.mount()
-          resolve(book)
-        } else {
-          reject(new Error('Not entry page'))
-        }
-      })
-    })
-  }
 }
 
-WikitextMagicBook.autoMount({
-  mw: window.mw,
-})
+if (import.meta.env.DEV) {
+  const root = document.getElementById('mw-content-text')!
+  const mw = window.mw
+  const conf = mw.config.get()
+
+  if (
+    conf.wgCanonicalSpecialPageName === 'Blankpage' &&
+    conf.wgTitle.endsWith('/WikitextMagicBook')
+  ) {
+    const book = new WikitextMagicBook(root, {
+      mw: window.mw,
+    })
+    book.mount()
+  } else {
+    console.warn('Wikitext Magic Book is not enabled.')
+  }
+} else {
+  mw.hook('wikipage.content').add(($container) => {
+    const root = $container[0]
+    const book = new WikitextMagicBook(root, {
+      mw: window.mw,
+    })
+    book.mount()
+  })
+}

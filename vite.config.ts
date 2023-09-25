@@ -5,6 +5,7 @@ import Vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import { viteLibAutoload } from './plugins/viteLibAutoload'
 
 const PROD =
   process.env.NODE_ENV === 'production' &&
@@ -12,6 +13,7 @@ const PROD =
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './',
   plugins: [
     UnoCSS(),
     AutoImport({
@@ -30,6 +32,7 @@ export default defineConfig({
       resolvers: [NaiveUiResolver()],
     }),
     Vue({}),
+    viteLibAutoload(),
   ],
   resolve: {
     alias: {

@@ -19,17 +19,14 @@
     }
   },
   "include": [
+    "plugins",
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
     "node_modules/types-mediawiki"
   ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ],
+  "references": [],
   "vueCompilerOptions": {
     "plugins": ["@vue/language-plugin-pug"]
   }
