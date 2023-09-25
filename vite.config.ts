@@ -16,7 +16,7 @@ export default defineConfig({
     UnoCSS(),
     AutoImport({
       dts: 'src/auto-imports.d.ts',
-      imports: ['vue', 'pinia', '@vueuse/core'],
+      imports: ['vue', 'vue-router', 'pinia', '@vueuse/core'],
       dirs: [
         'src/stores',
         'src/utils/**',

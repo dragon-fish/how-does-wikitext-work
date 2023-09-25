@@ -1,10 +1,12 @@
 <template lang="pug">
 div
   ReplPlayground(
-    title='第一节：基本文字样式',
-    :check-answer='checkAnswer',
+    :title='title',
+    :default-value='defaultValue',
     :example-answer='exampleAnswer',
-    :default-value='defaultValue'
+    :on-init='onInit',
+    :before-submit='beforeSubmit',
+    :check-answer='checkAnswer'
   )
     template(#doc)
       NH3 关于字体样式
@@ -34,12 +36,14 @@ div
 </template>
 
 <script setup lang="ts">
-import {} from 'vue'
-
+const title = `第一节：基本文字样式`
 const defaultValue = `斜体\n\n粗体\n\n粗斜体`
 const exampleAnswer = `''斜体''\n\n'''粗体'''\n\n'''''粗斜体'''''`
-
-function checkAnswer(wikitext: string, html: string) {
+async function onInit() {}
+async function beforeSubmit(wikitext: string) {
+  return wikitext
+}
+async function checkAnswer(wikitext: string, html: string) {
   const dom = new DOMParser().parseFromString(html, 'text/html')
   const bold = dom.querySelector('b')
   const italic = dom.querySelector('i')

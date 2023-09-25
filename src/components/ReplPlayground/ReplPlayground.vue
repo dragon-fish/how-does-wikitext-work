@@ -25,8 +25,8 @@ type ResultType = 'default' | 'success' | 'error'
 
 const props = defineProps<{
   title: string
-  exampleAnswer: string
   defaultValue: string
+  exampleAnswer: string
   onInit?: () => Awaitable<any>
   beforeSubmit?: (wikitext: string) => Awaitable<string>
   checkAnswer?: (wikitext: string, html: string) => Awaitable<boolean>
